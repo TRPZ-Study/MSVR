@@ -534,5 +534,10 @@ function init() {
         draw()
     }
 
-    draw();
+    animating();
+}
+
+function animating() {
+    draw()
+    window.requestAnimationFrame(animating)
 }
