@@ -8,9 +8,9 @@ let reflection;
 let incoming = []
 let range = []
 
-let showmyself;
-let reflectionTexture;
-let twoTriangles;
+let forCameraUtils;
+let newTexture;
+let trianglesSystem;
 let texture;
 
 function deg2rad(angle) {
@@ -165,16 +165,16 @@ function draw() {
 
     let modelViewProjection = m4.identity()
     gl.uniformMatrix4fv(shProgram.iModelViewProjectionMatrix, false, modelViewProjection);
-    gl.bindTexture(gl.TEXTURE_2D, reflectionTexture);
+    gl.bindTexture(gl.TEXTURE_2D, newTexture);
     gl.texImage2D(
         gl.TEXTURE_2D,
         0,
         gl.RGBA,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        showmyself
+        forCameraUtils
     );
-    twoTriangles.Draw()
+    trianglesSystem.Draw()
     gl.clear(gl.DEPTH_BUFFER_BIT);
 
 
@@ -420,8 +420,8 @@ function initGL() {
     // surface.BufferData(sur[0], sur[1]);
     surface.BufferData(...CreateSurfaceData());
 
-    twoTriangles = new Model('Two triangles');
-    twoTriangles.BufferData(
+    trianglesSystem = new Model('Two triangles');
+    trianglesSystem.BufferData(
         [-1, -1, 0, 1, 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, -1, 1, 0],
         [1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0]
     )
@@ -491,8 +491,8 @@ function init() {
         canvas = document.getElementById("webglcanvas");
         gl = canvas.getContext("webgl");
 
-        showmyself = readCamera()
-        reflectionTexture = CreateCameraTexture()
+        forCameraUtils = readCamera()
+        newTexture = CreateCameraTexture()
 
         if (!gl) {
             throw "Browser does not support WebGL";
@@ -534,7 +534,5 @@ function init() {
         draw()
     }
 
-
-    
     draw();
 }
