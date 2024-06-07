@@ -485,7 +485,7 @@ function init() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     const textureImage = new Image();
     textureImage.crossOrigin = 'anonymus';
-    textureImage.src = "https://i.imgur.com/5m51MCo.jpg";
+    textureImage.src = "https://i.imgur.com/EnUHjnt.jpg";
     textureImage.onload = () => {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(

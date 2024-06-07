@@ -1,6 +1,6 @@
-# Practical assignment #2
+# Practical assignment #1
 
-Варіант: 16
+Новий варіант: 13
 
 Фігура: Surface of Revolution of a Parabola of Arbitrary Position
 
@@ -8,4 +8,4 @@
 
 Група: ТР-32мп
 
-![gif](./PA2.gif)
+![gif](./PA-1.gif)
