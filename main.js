@@ -8,6 +8,11 @@ let reflection;
 let incoming = []
 let range = []
 
+let showmyself;
+let reflectionTexture;
+let twoTriangles;
+let texture;
+
 function deg2rad(angle) {
     return angle * Math.PI / 180;
 }
@@ -153,10 +158,28 @@ function draw() {
     gl.uniform4fv(shProgram.iColor, [1, 1, 1, 1]);
 
 
-    let modelViewProjection = m4.multiply(projection, matAccum1);
+    //let modelViewProjection = m4.multiply(projection, matAccum1);
     // const normalMatrix = m4.identity();
     // m4.inverse(modelView, normalMatrix);
     // m4.transpose(normalMatrix, normalMatrix);
+
+    let modelViewProjection = m4.identity()
+    gl.uniformMatrix4fv(shProgram.iModelViewProjectionMatrix, false, modelViewProjection);
+    gl.bindTexture(gl.TEXTURE_2D, reflectionTexture);
+    gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        showmyself
+    );
+    twoTriangles.Draw()
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+
+
+    modelViewProjection = m4.multiply(projection, matAccum1 );
+
 
     //new
     reflection.ApplyLeftFrustum()
@@ -169,6 +192,8 @@ function draw() {
 
     //new
     gl.colorMask(true, false, false, false);
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
 
 
     surface.Draw();
@@ -394,6 +419,13 @@ function initGL() {
     // let sur = CreateSurfaceData();
     // surface.BufferData(sur[0], sur[1]);
     surface.BufferData(...CreateSurfaceData());
+
+    twoTriangles = new Model('Two triangles');
+    twoTriangles.BufferData(
+        [-1, -1, 0, 1, 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, -1, 1, 0],
+        [1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0]
+    )
+    
     gl.enable(gl.DEPTH_TEST);
 }
 
@@ -458,6 +490,10 @@ function init() {
     try {
         canvas = document.getElementById("webglcanvas");
         gl = canvas.getContext("webgl");
+
+        showmyself = readCamera()
+        reflectionTexture = CreateCameraTexture()
+
         if (!gl) {
             throw "Browser does not support WebGL";
         }
@@ -478,8 +514,7 @@ function init() {
 
     spaceball = new TrackballRotator(canvas, draw, 0);
 
-
-    let texture = gl.createTexture();
+    texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);

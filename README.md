@@ -1,4 +1,4 @@
-# Practical assignment #1
+# Practical assignment #2
 
 Новий варіант: 13
 
@@ -7,5 +7,3 @@
 Виконав: Мисько Андрій Олексійович
 
 Група: ТР-32мп
-
-![gif](./PA-1.gif)
