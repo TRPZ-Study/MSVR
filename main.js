@@ -7,12 +7,11 @@ let spaceball;                  // A SimpleRotator object that lets the user rot
 let reflection;
 let incoming = []
 let range = []
+
 let forCameraUtils;
 let newTexture;
 let trianglesSystem;
 let texture;
-let sphere, audio, audiosource, filterNow, myfilter, panner, context;
-let musicGainInput;
 
 function deg2rad(angle) {
     return angle * Math.PI / 180;
@@ -178,16 +177,9 @@ function draw() {
     trianglesSystem.Draw()
     gl.clear(gl.DEPTH_BUFFER_BIT);
 
-    const timeframe = Date.now() / 1000;
-    if (panner) {
-        panner.setPosition(Math.sin(timeframe)/2, Math.cos(timeframe)/2, 1);
-    }
-    gl.uniformMatrix4fv(shProgram.iModelViewProjectionMatrix, false, m4.multiply(m4.identity(),
-        m4.multiply(m4.translation(Math.sin(timeframe)/2, Math.cos(timeframe)/2, 1), m4.scaling(1, 1, 1))));
-    sphere.Draw();
-    gl.clear(gl.DEPTH_BUFFER_BIT);
 
     modelViewProjection = m4.multiply(projection, matAccum1 );
+
 
     //new
     reflection.ApplyLeftFrustum()
@@ -198,6 +190,7 @@ function draw() {
     //gl.uniformMatrix4fv(shProgram.iNormalMatrix, false, modelViewProjection);
     //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1]);
 
+    //new
     gl.colorMask(true, false, false, false);
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -207,6 +200,7 @@ function draw() {
 
     gl.clear(gl.DEPTH_BUFFER_BIT);
 
+    //друге
     reflection.ApplyRightFrustum()
     modelViewProjection = m4.multiply(reflection.mProjectionMatrix, m4.multiply(reflection.mModelViewMatrix, matAccum1));
     gl.uniformMatrix4fv(shProgram.iModelViewProjectionMatrix, false, modelViewProjection);
@@ -246,6 +240,23 @@ function CreateSurfaceData() {
             vertexList.push(temp3.x, temp3.y, temp3.z);
             vertexList.push(temp4.x, temp4.y, temp4.z);
             vertexList.push(temp2.x, temp2.y, temp2.z);
+            
+            
+            // let v21 = { x: temp2.x - temp.x, y: temp2.y - temp.y, z: temp2.z - temp.z },
+            // v31 = { x: temp3.x - temp.x, y: temp3.y - temp.y, z: temp3.z - temp.z },
+            // v42 = { x: temp4.x - temp2.x, y: temp4.y - temp2.y, z: temp4.z - temp2.z },
+            // v32 = { x: temp3.x - temp2.x, y: temp3.y - temp2.y, z: temp3.z - temp2.z };
+            // let n1 = cross(v21, v31),
+            // n2 = cross(v42, v32);
+            // normalization(n1);
+            // normalization(n2);
+
+            // normalList.push(n1.x, n1.y, n1.z)
+            // normalList.push(n1.x, n1.y, n1.z)
+            // normalList.push(n1.x, n1.y, n1.z)
+            // normalList.push(n2.x, n2.y, n2.z)
+            // normalList.push(n2.x, n2.y, n2.z)
+            // normalList.push(n2.x, n2.y, n2.z)
 
             vertexTexCoordList.push(map(u1, -Math.PI, Math.PI, 0, 1), map(v1, -a, 0, 0, 1));
             vertexTexCoordList.push(map(u2, -Math.PI, Math.PI, 0, 1), map(v1, -a, 0, 0, 1));
@@ -277,6 +288,72 @@ function getDerivative2(a, ω1, u1, v, delta) {
     return [x0,y0,z0];
 }
 
+// function CreateSurfaceData() {
+//     //Побудова власне фігури
+//     let a = 2;
+//     let p = 1;
+
+//     let normalsList =[];
+//     let vertexList = [];
+//     let vertexTexCoordList = [];
+
+//     let numSteps = 50; // Кількість кроків
+
+//     // Значення параметра u
+//     const uMin = -Math.PI;
+//     const uMax = Math.PI;
+//     // Значення параметра v
+//     const vMin = -2;
+//     const vMax = 0;
+//     let delta = 0.0001;
+
+//     for (let i = 0; i < numSteps; i++) {
+//         const u1 = uMin + (uMax - uMin) * (i / numSteps);
+//         const u2 = uMin + (uMax - uMin) * ((i + 1) / numSteps);
+
+//         for (let j = 0; j < numSteps; j++) {
+//             const v1 = vMin + (vMax - vMin) * (j / numSteps);
+//             const v2 = vMin + (vMax - vMin) * ((j + 1) / numSteps);
+
+//             let ω1 = p * u1;
+//             let [x1, y1, z1] = creating(a, ω1, u1, v1);
+//             let derivative1 = getDerivative1(a, ω1, u1, v1, delta);
+//             let derivative2 = getDerivative2(a, ω1, u1, v1, delta);
+//             let normal1 = m4.cross(derivative1,derivative2);
+
+//             let ω2 = p * u2;
+//             let [x2, y2, z2] = creating(a, ω2, u2, v1);
+//             derivative1 = getDerivative1(a, ω2, u2, v1, delta);
+//             derivative2 = getDerivative2(a, ω2, u2, v1, delta);
+//             let normal2 = m4.cross(derivative1,derivative2);
+
+//             ω1 = p * u1;
+//             let [x3, y3, z3] = creating(a, ω1, u1, v2);
+//             derivative1 = getDerivative1(a, ω1, u1, v2, delta);
+//             derivative2 = getDerivative2(a, ω1, u1, v2, delta);
+//             let normal3 = m4.cross(derivative1,derivative2);
+
+//             ω2 = p * u2;
+//             let [x4, y4, z4] = creating(a, ω2, u2, v2);
+//             derivative1 = getDerivative1(a, ω2, u2, v2, delta);
+//             derivative2 = getDerivative2(a, ω2, u2, v2, delta);
+//             let normal4 = m4.cross(derivative1,derivative2);
+
+//             vertexList.push(x1, y1, z1, x2, y2, z2, x3, y3, z3, x3, y3, z3, x2, y2, z2, x4, y4, z4);
+//             normalsList.push(normal1[0],normal1[1],normal1[2], normal2[0],normal2[1],normal2[2],normal3[0],
+//                 normal3[1],normal3[2],normal3[0],normal3[1],normal3[2], normal2[0],normal2[1],normal2[2], normal4[0],normal4[1],normal4[2]);
+
+//             vertexTexCoordList.push(map(u1, -Math.PI, Math.PI, 0, 1), map(v1, -a, 0, 0, 1));
+//             vertexTexCoordList.push(map(u2, -Math.PI, Math.PI, 0, 1), map(v1, -a, 0, 0, 1));
+//             vertexTexCoordList.push(map(u1, -Math.PI, Math.PI, 0, 1), map(v2, -a, 0, 0, 1));
+//             vertexTexCoordList.push(map(u1, -Math.PI, Math.PI, 0, 1), map(v2, -a, 0, 0, 1));
+//             vertexTexCoordList.push(map(u2, -Math.PI, Math.PI, 0, 1), map(v1, -a, 0, 0, 1));
+//             vertexTexCoordList.push(map(u2, -Math.PI, Math.PI, 0, 1), map(v2, -a, 0, 0, 1));
+//         }
+//     }
+//     return [vertexList, vertexTexCoordList];
+// }
+
 function map(value, a, b, c, d) {
     value = (value - a) / (b - a);
     return c + value * (d - c);
@@ -290,11 +367,11 @@ function creating(a, ω1, u1, v1){
 }
 
 const radius = 0.1;
-function getSphereVertex(long, max) {
+function getSphereVertex(long, lat) {
     return {
-        x: radius * Math.cos(long) * Math.sin(max),
-        y: radius * Math.sin(long) * Math.sin(max),
-        z: radius * Math.cos(max)
+        x: radius * Math.cos(long) * Math.sin(lat),
+        y: radius * Math.sin(long) * Math.sin(lat),
+        z: radius * Math.cos(lat)
     }
 }
 
@@ -317,36 +394,10 @@ function cross(a, b) {
     return { x: x, y: y, z: z }
 }
 
-function generateSphere(r = 0.07) {
-    let list = [];
-    let min = -Math.PI;
-    let max = -Math.PI ;
-    while (min < Math.PI) {
-        while (max < Math.PI ) {
-            let v1 = surfaceForSphere(r, min, max);
-            let v2 = surfaceForSphere(r, min + 0.5, max);
-            let v3 = surfaceForSphere(r, min, max + 0.5);
-            let v4 = surfaceForSphere(r, min + 0.5, max + 0.5);
-            list.push(v1.x, v1.y, v1.z);
-            list.push(v2.x, v2.y, v2.z);
-            list.push(v3.x, v3.y, v3.z);
-            list.push(v2.x, v2.y, v2.z);
-            list.push(v4.x, v4.y, v4.z);
-            list.push(v3.x, v3.y, v3.z);
-            max += 0.5;
-        }
-        max = -Math.PI * 0.5
-        min += 0.5;
-    }
-    return list;
-}
-
-function surfaceForSphere(r, u, v) {
-    let x = r * Math.sin(u) * Math.cos(v);
-    let y = r * Math.sin(u) * Math.sin(v);
-    let z = r * Math.cos(u);
-    return { x: x, y: y, z: z };
-}
+// function normalization(a) {
+//     var len = Math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+//     a.x /= len; a.y /= len; a.z /= len;
+// }
 
 /* Initialize the WebGL context. Called from init() */
 function initGL() {
@@ -374,16 +425,9 @@ function initGL() {
         [-1, -1, 0, 1, 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, -1, 1, 0],
         [1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0]
     )
-
-
-    sphere = new Model('Surface2');
-    sphere.BufferData(generateSphere(), new Array(generateSphere().length).fill(0))
-
-
+    
     gl.enable(gl.DEPTH_TEST);
 }
-
-
 
 
 /* Creates a program for use in the WebGL context gl, and returns the
@@ -490,55 +534,12 @@ function init() {
         draw()
     }
 
+
+    
     animating();
 }
 
 function animating() {
     draw()
     window.requestAnimationFrame(animating)
-}
-
-
-
-
-function initForAudio() {
-    filterNow = document.getElementById('filterState');
-    audio = document.getElementById('audioContext');
-    musicGainInput = document.getElementById("musicGain");
-    musicGainInput.addEventListener("input", draw);
-
-    audio.addEventListener('play', () => {
-        if (!context) {
-            context = new (window.AudioContext || window.webkitAudioContext)();
-            audiosource = context.createMediaElementSource(audio);
-            myfilter = context.createBiquadFilter();
-            panner = context.createPanner();
-            audiosource.connect(panner);
-            panner.connect(myfilter);
-            myfilter.connect(context.destination);
-            myfilter.type = 'peaking';
-            myfilter.frequency.value = musicGainInput.value;
-            myfilter.Q.value = 1;
-            myfilter.gain.value = 0;
-
-            context.resume();
-        }
-    })
-    audio.addEventListener('pause', () => {
-        context.resume();
-    })
-    musicGainInput.addEventListener('change', function () {
-        myfilter.gain.value = musicGainInput.value;
-    })
-    filterNow.addEventListener('change', function () {
-        if (filterNow.checked) {
-            panner.disconnect();
-            panner.connect(myfilter);
-            myfilter.connect(context.destination);
-        } else {
-            panner.disconnect();
-            panner.connect(context.destination);
-        }
-    });
-    audio.play();
 }
