@@ -60,5 +60,19 @@
         style="background-color: red"
       ></canvas>
     </div>
+
+    <audio id="audioContext" controls loop crossorigin="anonymous" src="https://raw.githubusercontent.com/TRPZ-Study/MSVR/main/Don't_Be_So_Shy.mp3"></audio><br>
+    <button onclick=" initForAudio()">Play</button>
+    <label for="filterState">Filter</label>
+    <input type="checkbox" name="filterState" id="filterState" checked /><br>
+    <div class="forinputs">
+      <div>
+        <label for="musicFrequ">Frequency:</label>
+        <input type="range" id="musicFrequ" name="musicFrequ" min="0" max="22050" step="1" value="300" onchange="initForAudio()"
+        />
+      </div>
+  </div>
+
+
   </body>
 </html>
