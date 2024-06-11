@@ -12,7 +12,7 @@ let newTexture;
 let trianglesSystem;
 let texture;
 let sphere, audio, audiosource, filterNow, myfilter, panner, context;
-let musicFrequInput;
+let musicGainInput;
 
 function deg2rad(angle) {
     return angle * Math.PI / 180;
@@ -246,23 +246,6 @@ function CreateSurfaceData() {
             vertexList.push(temp3.x, temp3.y, temp3.z);
             vertexList.push(temp4.x, temp4.y, temp4.z);
             vertexList.push(temp2.x, temp2.y, temp2.z);
-            
-            
-            // let v21 = { x: temp2.x - temp.x, y: temp2.y - temp.y, z: temp2.z - temp.z },
-            // v31 = { x: temp3.x - temp.x, y: temp3.y - temp.y, z: temp3.z - temp.z },
-            // v42 = { x: temp4.x - temp2.x, y: temp4.y - temp2.y, z: temp4.z - temp2.z },
-            // v32 = { x: temp3.x - temp2.x, y: temp3.y - temp2.y, z: temp3.z - temp2.z };
-            // let n1 = cross(v21, v31),
-            // n2 = cross(v42, v32);
-            // normalization(n1);
-            // normalization(n2);
-
-            // normalList.push(n1.x, n1.y, n1.z)
-            // normalList.push(n1.x, n1.y, n1.z)
-            // normalList.push(n1.x, n1.y, n1.z)
-            // normalList.push(n2.x, n2.y, n2.z)
-            // normalList.push(n2.x, n2.y, n2.z)
-            // normalList.push(n2.x, n2.y, n2.z)
 
             vertexTexCoordList.push(map(u1, -Math.PI, Math.PI, 0, 1), map(v1, -a, 0, 0, 1));
             vertexTexCoordList.push(map(u2, -Math.PI, Math.PI, 0, 1), map(v1, -a, 0, 0, 1));
@@ -334,12 +317,12 @@ function cross(a, b) {
     return { x: x, y: y, z: z }
 }
 
-function generateSphere(r = 0.1) {
+function generateSphere(r = 0.07) {
     let list = [];
     let min = -Math.PI;
-    let max = -Math.PI * 0.5;
+    let max = -Math.PI ;
     while (min < Math.PI) {
-        while (max < Math.PI * 0.5) {
+        while (max < Math.PI ) {
             let v1 = surfaceForSphere(r, min, max);
             let v2 = surfaceForSphere(r, min + 0.5, max);
             let v3 = surfaceForSphere(r, min, max + 0.5);
@@ -521,8 +504,8 @@ function animating() {
 function initForAudio() {
     filterNow = document.getElementById('filterState');
     audio = document.getElementById('audioContext');
-    musicFrequInput = document.getElementById("musicFrequ");
-    musicFrequInput.addEventListener("input", draw);
+    musicGainInput = document.getElementById("musicGain");
+    musicGainInput.addEventListener("input", draw);
 
     audio.addEventListener('play', () => {
         if (!context) {
@@ -534,8 +517,9 @@ function initForAudio() {
             panner.connect(myfilter);
             myfilter.connect(context.destination);
             myfilter.type = 'peaking';
-            myfilter.frequency.value = musicFrequInput.value;
+            myfilter.frequency.value = musicGainInput.value;
             myfilter.Q.value = 1;
+            myfilter.gain.value = 0;
 
             context.resume();
         }
@@ -543,8 +527,8 @@ function initForAudio() {
     audio.addEventListener('pause', () => {
         context.resume();
     })
-    musicFrequInput.addEventListener('change', function () {
-        myfilter.frequency.value = musicFrequInput.value;
+    musicGainInput.addEventListener('change', function () {
+        myfilter.gain.value = musicGainInput.value;
     })
     filterNow.addEventListener('change', function () {
         if (filterNow.checked) {

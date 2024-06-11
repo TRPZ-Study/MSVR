@@ -62,12 +62,12 @@
     </div>
 
     <audio src="https://raw.githubusercontent.com/TRPZ-Study/MSVR/main/Dont_Be_So_Shy.mp3" id="audioContext" controls loop crossorigin="anonymous"></audio><br>
-    <button onclick=" initForAudio()">Play</button>
+    <button onclick=" initForAudio()">Play</button><br>
     <label for="filterState">Filter</label>
     <input type="checkbox" name="filterState" id="filterState" checked />
       <div>
-        <label for="musicFrequ">Frequency</label>
-        <input type="range" id="musicFrequ" name="musicFrequ" min="0" max="22050" step="1" value="300" onchange="initForAudio()"
+        <label for="musicGain">Gain</label>
+        <input type="range" id="musicGain" name="musicGain" min="-3" max="1541" step="1" value="0" onchange="initForAudio()"
         />
       </div>
 
