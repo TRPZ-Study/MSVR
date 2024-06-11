@@ -1,8 +1,8 @@
-# Practical assignment #2
+# Розрахунково-графічна робота
 
-Новий варіант: 13
+Варіант: 13
 
-Фігура: Surface of Revolution of a Parabola of Arbitrary Position
+Фільтр: піковий
 
 Виконав: Мисько Андрій Олексійович
 
